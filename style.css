@@ -1,5 +1,5 @@
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: Georgia, "Times New Roman", serif;
     margin: 0;
     padding: 0;
     background-color: #f4f6f8;
@@ -41,15 +41,6 @@ header h2 {
 }
 .nav-btn.active {
     background-color: #3b82f6;
-}
-
-/* Page Content Wrappers */
-.page-section {
-    display: none;
-    padding: 20px;
-}
-.page-section.active {
-    display: block;
 }
 
 /* Write-up Styling */
@@ -126,4 +117,419 @@ input[type="range"] {
     pointer-events: none;
     display: none;
     z-index: 9999;
+}
+
+/* =========================================
+   SCROLLYTELLING LAYOUT
+   ========================================= */
+
+   html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: 0;
+}
+/* Navigation */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+header nav {
+    display: flex;
+    gap: 25px;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+header nav a:hover {
+    color: #fb923c;
+}
+
+/* Each slide occupies at least one screen */
+
+.story-section {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+
+    box-sizing: border-box;
+
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px 24px;
+    overflow: hidden;
+}
+
+/* Introduction slide */
+
+.intro-section {
+    background: linear-gradient(
+        135deg,
+        #0f172a 0%,
+        #7f1d1d 65%,
+        #ea580c 100%
+    );
+
+    color: white;
+}
+
+.story-content {
+    max-width: 900px;
+    margin: auto;
+}
+
+.intro-section h1 {
+    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 1.1;
+    margin-bottom: 25px;
+}
+
+.highlight {
+    color: #fbbf24;
+}
+
+.intro-section p {
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    line-height: 1.6;
+    max-width: 650px;
+    margin: 0 auto 40px;
+}
+
+/* Scroll button */
+
+.scroll-button {
+    display: inline-block;
+    padding: 15px 30px;
+
+    background: #f97316;
+    color: white;
+
+    font-weight: bold;
+    text-decoration: none;
+
+    border-radius: 30px;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.scroll-button:hover {
+    background: #ea580c;
+    transform: translateY(-4px);
+}
+
+
+/* Write-up slide */
+
+.writeup-section {
+    background: #e2e8f0;
+}
+
+/* Responsive map sizing */
+
+#map-container {
+    width: min(960px, 95vw);
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 8 / 5;
+}
+
+#map-container svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+/* Worst-case scenario slide */
+
+.map-section {
+    background: linear-gradient(
+        135deg,
+        #1a0d0d 0%,
+        #290f0f 55%,
+        #a20d0d 100%
+    );
+
+    color: white;
+    gap: 15px;
+}
+
+.map-introduction {
+    max-width: 800px;
+    margin: 0 auto 20px;
+    text-align: center;
+}
+
+.map-introduction h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    margin-bottom: 12px;
+}
+
+.map-introduction p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.map-subtitle {
+    color: #fca5a5;
+    font-style: italic;
+}
+
+/* Hide controls during the guided introduction */
+
+.map-section #controls-container {
+    display: none;
+}
+
+/* Keep map centered */
+
+.map-section #map-container {
+    width: min(1000px, 95vw, 88vh);
+    width: min(1000px, 95vw, 88dvh);
+
+    height: auto;
+    aspect-ratio: 8 / 5;
+
+    max-height: 55dvh;
+
+    margin: 0 auto;
+
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+/* Keep the map within the slide */
+
+.map-section {
+    gap: 15px;
+}
+
+.map-introduction {
+    margin: 0 auto;
+}
+
+.map-introduction h1 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    margin-bottom: 10px;
+}
+
+.map-introduction p {
+    margin-bottom: 10px;
+}
+
+.map-section #map-container {
+    width: min(850px, 95vw);
+    height: auto;
+    max-height: 55vh;
+    aspect-ratio: 8 / 5;
+    margin: 0 auto;
+}
+
+/* =========================================
+   SLIDE 3: STATE SELECTION
+   ========================================= */
+
+   .state-section {
+    background: #401f68;
+    color: white;
+    text-align: center;
+    gap: 30px;
+}
+
+.state-introduction {
+    max-width: 850px;
+}
+
+.state-introduction h1 {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    margin-bottom: 20px;
+}
+
+.state-introduction p {
+    font-size: clamp(1rem, 1.8vw, 1.3rem);
+    line-height: 1.6;
+    color: #cbd5e1;
+}
+
+.state-selector-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    width: min(400px, 90vw);
+    padding: 30px;
+    box-sizing: border-box;
+
+    background: white;
+    color: #111827;
+    border-radius: 12px;
+    text-align: left;
+}
+
+.state-selector-container label {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Search input */
+
+.autocomplete-container {
+    position: relative;
+    width: 100%;
+}
+
+#stateSearch {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px;
+
+    font-family: Georgia, serif;
+    font-size: 1rem;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+}
+
+#stateSearch:focus {
+    outline: 2px solid #f97316;
+}
+
+/* Autocomplete suggestions */
+
+.suggestions {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+
+    max-height: 220px;
+    overflow-y: auto;
+    z-index: 20;
+}
+
+.suggestion-item {
+    padding: 12px 14px;
+    cursor: pointer;
+    color: #111827;
+}
+
+.suggestion-item:hover,
+.suggestion-item.active {
+    background: #ffedd5;
+}
+
+/* Explore button */
+
+#exploreStateBtn {
+    padding: 14px 20px;
+    background: #f97316;
+    color: white;
+
+    border: none;
+    border-radius: 8px;
+
+    font-family: Georgia, serif;
+    font-size: 1rem;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+#exploreStateBtn:hover:not(:disabled) {
+    background: #ea580c;
+}
+
+#exploreStateBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#selectedStateText {
+    color: #fca5a5;
+    font-size: 1.2rem;
+}
+
+/* =========================================
+   MAP STATE SELECTION
+   ========================================= */
+
+   #state-selection-panel {
+    text-align: center;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.selection-instruction {
+    font-size: 1rem;
+    color: #fca5a5;
+    font-style: italic;
+}
+
+#selected-state-info {
+    text-align: center;
+}
+
+#selected-state-info[hidden] {
+    display: none;
+}
+
+.selection-label {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: #fca5a5;
+    margin-bottom: 5px;
+}
+
+#selected-state-name {
+    font-size: 1.8rem;
+    color: white;
+    margin: 8px 0 15px;
+}
+
+#continue-to-impacts {
+    padding: 12px 28px;
+    background: #f97316;
+    color: white;
+
+    border: none;
+    border-radius: 25px;
+
+    font-family: Georgia, serif;
+    font-weight: bold;
+    font-size: 1rem;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#continue-to-impacts:hover {
+    background: #ea580c;
+    transform: translateY(-2px);
+}
+
+/* Make clickable states feel interactive */
+
+.state {
+    cursor: pointer;
 }

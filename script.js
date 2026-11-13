@@ -18,16 +18,16 @@ const height = 600;
 
 const svg = d3.select("#map-container")
     .append("svg")
-    .attr("width", width)
-    .attr("height", height);
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("width", "100%")
+    .style("height", "100%");
 
 const g = svg.append("g");
 const tooltip = d3.select("#tooltip");
 
 // 2. Define projection and geoPath
-const projection = d3.geoAlbersUsa()
-    .scale(1200)
-    .translate([width / 2, height / 2]);
+const projection = d3.geoAlbersUsa();
 
 const path = d3.geoPath().projection(projection);
 
@@ -43,12 +43,32 @@ const rainColorScale = d3.scaleSequential()
 // 4. Strict Bounded Pan and Zoom
 const zoom = d3.zoom()
     .scaleExtent([1, 8])
-    .translateExtent([[-width / 2, -height / 2], [width * 1.5, height * 1.5]])
+    .translateExtent([[0, 0], [width, height]])
+    .filter((event) => {
+        // Allow dragging with the left mouse button
+        if (event.type === "mousedown") {
+            return event.button === 0;
+        }
+
+        // Only allow wheel zoom when Ctrl or Cmd is held
+        if (event.type === "wheel") {
+            return event.ctrlKey || event.metaKey;
+        }
+
+        // Allow double-click zoom and touch gestures
+        return true;
+    })
     .on("zoom", (event) => {
         g.attr("transform", event.transform);
     });
 
 svg.call(zoom);
+
+svg.on("wheel.prevent-slide-scroll", function(event) {
+    if (event.ctrlKey || event.metaKey) {
+        event.preventDefault();
+    }
+}, { passive: false });
 
 // 5. Load TopoJSON Map and CMIP6 Projections Concurrently
 Promise.all([
@@ -56,6 +76,17 @@ Promise.all([
     d3.json("state_projections.json")
 ]).then(([usData, cmipData]) => {
     const statesGeo = topojson.feature(usData, usData.objects.states).features;
+
+    // Fit all states within the SVG, with a little padding.
+const statesCollection = {
+    type: "FeatureCollection",
+    features: statesGeo
+};
+
+projection.fitExtent(
+    [[35, 35], [width - 35, height - 35]],
+    statesCollection
+);
 
     function getClimateValue(stateName, year, variable, scenario) {
         if (cmipData[stateName] && cmipData[stateName][scenario]) {
@@ -86,7 +117,7 @@ Promise.all([
 
     let currentVariable = "temperature";
     let currentScenario = "ssp585";
-    let currentYear = 2026;
+    let currentYear = 2100;
 
     function updateMapColors() {
         statePaths.transition()
@@ -126,12 +157,51 @@ Promise.all([
             tooltip.style("display", "none");
         });
 
+// ==========================================
+// STATE SELECTION THROUGH MAP CLICK
+// ==========================================
+
+let selectedState = null;
+
+const selectionPanel = document.getElementById(
+    "selected-state-info"
+);
+
+const selectedStateName = document.getElementById(
+    "selected-state-name"
+);
+
+const selectionInstruction = document.querySelector(
+    ".selection-instruction"
+);
+
+statePaths.on("click", function(event, d) {
+    const stateName = d.properties.name;
+
+    selectedState = stateName;
+
+    // Remove previous state selection
+    statePaths.classed("selected-state", false);
+
+    // Highlight clicked state
+    d3.select(this)
+        .classed("selected-state", true)
+        .raise();
+
+    // Display selected state
+    selectedStateName.textContent = stateName;
+
+    selectionInstruction.style.display = "none";
+    selectionPanel.hidden = false;
+
+    console.log("Selected state:", selectedState);
+});        
+
     // 6. UI Event Listeners
     const slider = document.getElementById("yearSlider");
     const yearLabel = document.getElementById("yearLabel");
     const scenarioSelector = document.getElementById("scenarioSelector");
     const variableSelector = document.getElementById("variableSelector");
-    const mainTitle = document.getElementById("main-title");
 
     slider.addEventListener("input", function() {
         currentYear = parseInt(this.value);
@@ -146,7 +216,6 @@ Promise.all([
 
     variableSelector.addEventListener("change", function() {
         currentVariable = this.value;
-        mainTitle.innerText = `U.S. Climate Projections: ${currentVariable === 'temperature' ? 'Temperature Warming' : 'Rainfall Change'}`;
         updateMapColors();
     });
 
