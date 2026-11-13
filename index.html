@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMIP6 U.S. Climate Projections Explorer</title>
+    <!-- D3.js and TopoJSON Client CDN -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+    <!-- Link to external CSS stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Top Navigation Header -->
+    <header>
+        <h2>CMIP6 Explorer</h2>
+        <div class="nav-buttons">
+            <button class="nav-btn active" id="btn-map" onclick="switchPage('map')">Map View</button>
+            <button class="nav-btn" id="btn-writeup" onclick="switchPage('writeup')">Project Write-Up</button>
+        </div>
+    </header>
+
+    <!-- PAGE 1: MAP EXPLORER -->
+    <div id="section-map" class="page-section active">
+        <h1 id="main-title">U.S. Climate Projections: Temperature Warming</h1>
+        
+        <div id="controls-container">
+            <!-- Variable Selector -->
+            <div class="control-box">
+                <label for="variableSelector">Climate Variable:</label>
+                <select id="variableSelector">
+                    <option value="temperature" selected>Temperature Warming (°C)</option>
+                    <option value="rainfall">Rainfall Change (%)</option>
+                </select>
+            </div>
+
+            <!-- Scenario Selector -->
+            <div class="control-box">
+                <label for="scenarioSelector">Emissions Scenario (SSP):</label>
+                <select id="scenarioSelector">
+                    <option value="ssp126">Best Case (SSP1-2.6: Low Emissions)</option>
+                    <option value="ssp245">Intermediate (SSP2-4.5: Moderate)</option>
+                    <option value="ssp370">High (SSP3-7.0: Regional Rivalry)</option>
+                    <option value="ssp585" selected>Worst Case (SSP5-8.5: High Emissions)</option>
+                </select>
+            </div>
+
+            <!-- Year Slider -->
+            <div class="control-box">
+                <label for="yearSlider">Year: <span id="yearLabel">2026</span></label>
+                <input type="range" id="yearSlider" min="2026" max="2100" step="1" value="2026">
+            </div>
+        </div>
+
+        <div id="map-container"></div>
+    </div>
+
+    <!-- PAGE 2: PROJECT WRITE-UP -->
+    <div id="section-writeup" class="page-section">
+        <div id="writeup-container">
+            <h2>About the CMIP6 Climate Projections</h2>
+            <p>This interactive visualization tool explores projected climate changes across the United States using data generated from the <strong>Coupled Model Intercomparison Project Phase 6 (CMIP6)</strong>. These models help scientists understand future climate dynamics under various socioeconomic pathways.</p>
+            
+            <h3>Emissions Scenarios (Shared Socioeconomic Pathways - SSPs)</h3>
+            <ul>
+                <li><strong>SSP1-2.6 (Low Emissions):</strong> A sustainable pathway where global carbon emissions cut sharply, keeping warming close to or under 2°C.</li>
+                <li><strong>SSP2-4.5 (Moderate Emissions):</strong> A middle-of-the-road scenario where historical emissions patterns continue with modest reduction policies.</li>
+                <li><strong>SSP3-7.0 (High Emissions):</strong> Regional rivalry and high energy demand with slower economic growth and limited decarbonization.</li>
+                <li><strong>SSP5-8.5 (High Emissions / Fossil-fueled Development):</strong> A worst-case baseline scenario characterized by heavily fossil-fueled economies and rapid temperature expansion.</li>
+            </ul>
+
+            <h3>Methodology</h3>
+            <p>Temperature values are calculated as warming anomalies relative to a historical baseline, showing clear spatial variations across different regions of the continental United States.</p>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <!-- Link to external JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>
