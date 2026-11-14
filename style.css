@@ -233,6 +233,10 @@ header nav a:hover {
 
 .writeup-section {
     background: #e2e8f0;
+    /* The write-up is longer than one screen: let it grow instead of clipping */
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
 }
 
 /* Responsive map sizing */
