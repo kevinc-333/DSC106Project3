@@ -78,19 +78,20 @@
             </p>
 
             <div id="selected-state-info" hidden>
-                <p class="selection-label">YOUR SELECTED STATE</p>
+                <!-- <p class="selection-label">YOUR SELECTED STATE</p> -->
 
                 <h2 id="selected-state-name"></h2>
 
-                <button id="continue-to-impacts">
+                <!-- <button class="scroll-button">
                     Let's go →
-                </button>
+                </button> -->
             </div>
 
         </div>
     </section>
 
     <!-- PAGE 2: TEMPERATURE + RAINFALL IMPACTS FOR THE SELECTED STATE -->
+
     <section id="section-impacts" class="story-section state-section">
         <div class="state-introduction">
             <h1 id="impacts-title">Your state in 2100</h1>
@@ -105,8 +106,67 @@
                 Select a state on the map above to see how its rainfall changes.
             </p>
 
-            <h3>How much depends on our emissions</h3>
-            <ul id="impacts-scenarios"></ul>
+            <!-- <h3>How much depends on our emissions</h3>
+            <ul id="impacts-scenarios"></ul> -->
+        </div>
+    </section>
+
+    <section id="section-transition" class="transition1 story-section">
+        <div class="state-introduction">
+            <h1>Based on this, the future doesn't seem very bright.</h1>
+        </div>
+    </section>
+
+    <section id="section-transition" class="story-section">
+        <div class="state-introduction">
+            <h1>But this is only the <span class="highlight">WORST</span> case scenario.</h1>
+            <p><span class="highlight">Explore below to see what the future looks like in other scenarios.</span></p>
+        </div>
+    </section>
+
+    
+
+    <div id="section-map" class="story-section page-section active">
+        <!-- <h1></h1>
+        <h1></h1>
+        <h1>Play around and see for yourself</h1> -->
+        
+        <div id="controls-container">
+            <!-- Variable Selector -->
+            <div class="control-box">
+                <label for="variableSelector2">Climate Variable:</label>
+                <select id="variableSelector2">
+                    <option value="temperature" selected>Temperature Warming (°C)</option>
+                    <option value="rainfall">Rainfall Change (%)</option>
+                </select>
+            </div>
+
+            <!-- Scenario Selector -->
+            <div class="control-box">
+                <label for="scenarioSelector2">Emissions Scenario (SSP):</label>
+                <select id="scenarioSelector2">
+                    <option value="ssp126">Best Case (SSP1-2.6: Low Emissions)</option>
+                    <option value="ssp245">Intermediate (SSP2-4.5: Moderate)</option>
+                    <option value="ssp370">High (SSP3-7.0: Regional Rivalry)</option>
+                    <option value="ssp585" selected>Worst Case (SSP5-8.5: High Emissions)</option>
+                </select>
+            </div>
+
+            <!-- Year Slider -->
+            <div class="control-box">
+                <label for="yearSlider2">Year: <span id="yearLabel2">2026</span></label>
+                <input type="range" id="yearSlider2" min="2026" max="2100" step="1" value="2026">
+            </div>
+        </div>
+
+        <div id="map-container2"></div>
+    </div>
+
+    <section id="section-transition" class="story-section transition3">
+        <div class="state-introduction">
+            <h1>If we all work together, we can mitigate most of these effects.</h1>
+
+            
         </div>
     </section>
 
@@ -115,55 +175,18 @@
         <div id="writeup-container">
             <h2>Write-up</h2>
 
-            <h3>Goal</h3>
-            <p>Climate projections are usually reported as one global number: "+2°C", "+4°C". Those numbers are hard to relate to everyday life. We wanted readers to look at the place they live and ask what the projections mean there. So the page is a short story. It opens on a provocative question, shows the whole country under a worst-case future, lets the reader pick their own state, and then turns that state's numbers into plain language: how much hotter, how much wetter or drier, and how much of that depends on our choices about emissions.</p>
-
-            <h3>Data</h3>
-            <p>All climate values come from the <strong>Coupled Model Intercomparison Project Phase 6 (CMIP6)</strong>. We accessed CMIP6 through the public Pangeo/Google Cloud archive (<code>gs://cmip6</code>), using the catalog in <code>data.csv</code> to find the right Zarr stores. We used one model, <strong>IPSL-CM6A-LR</strong> (ensemble member <code>r1i1p1f1</code>), and two monthly variables from table <code>Amon</code>:</p>
-            <ul>
-                <li><strong><code>tas</code></strong>: near-surface air temperature, converted from kelvin to °C.</li>
-                <li><strong><code>pr</code></strong>: precipitation flux (rain plus snow), converted from kg m<sup>-2</sup> s<sup>-1</sup> to mm/day by multiplying by 86,400.</li>
-            </ul>
-            <p>We pulled the <em>historical</em> experiment for the 1995–2014 baseline, the reference period used by the IPCC Sixth Assessment Report. We pulled four <em>ScenarioMIP</em> experiments for 2015–2100:</p>
-            <ul>
-                <li><strong>SSP1-2.6 (Low emissions):</strong> emissions fall sharply, keeping global warming near 2°C.</li>
-                <li><strong>SSP2-4.5 (Moderate emissions):</strong> a middle-of-the-road path that continues current trends with modest climate policy.</li>
-                <li><strong>SSP3-7.0 (High emissions):</strong> regional rivalry, high energy demand and little decarbonization.</li>
-                <li><strong>SSP5-8.5 (Very high emissions):</strong> fossil-fueled development, the upper end of the projections.</li>
-            </ul>
-
-            <h3>Processing</h3>
-            <p>The script <code>main.py</code> does the processing:</p>
-            <ol>
-                <li>Converts longitudes from 0–360° to −180–180° and cuts the global grid down to a box around the United States.</li>
-                <li>Averages the monthly values into annual means.</li>
-                <li>Clips each year's grid to every state's boundary (U.S. Census 2018 cartographic boundaries) and averages the grid cells inside it. We use <code>all_touched</code> so that small states still pick up grid cells. DC is smaller than one grid cell, so it falls back to the nearest cell to its centroid.</li>
-                <li>Writes one record per state to <code>state_projections.json</code>: the 1995–2014 baseline and the annual 2015–2100 series for each scenario.</li>
-            </ol>
-            <p>The browser then shows every value as a <strong>change from the 1995–2014 baseline</strong>. Temperature is shown in degrees of warming and precipitation as a percent change. A single model year is mostly weather rather than climate. Year-to-year rainfall in one state can swing by ±30%. So every number on the page is an average over an <strong>11-year window centred on the chosen year</strong>. At the end of the record the window is cut short, so "2100" means the 2095–2100 average.</p>
-
             <h3>Design decisions</h3>
             <ul>
-                <li><strong>Scrolling story first, exploration second.</strong> Many readers won't touch a control. So the default view already makes the main point: the whole country under SSP5-8.5 in 2100. Interaction then personalizes that point instead of being needed to find it.</li>
-                <li><strong>Choropleth by state.</strong> States are the geographic unit readers recognize fastest and can find "their" place in. The model grid is about 2.5° × 1.3°, so finer units like counties or cities would claim more precision than the data has.</li>
-                <li><strong>Color.</strong> Warming is positive everywhere in every scenario, so temperature uses a single-hue sequential scale (light orange to dark red, 0–10°C). Rainfall can go either way, so it uses a diverging brown-to-teal scale centred on 0%. Brown means drier, teal means wetter, and an unchanged state stays neutral.</li>
-                <li><strong>Selecting a state.</strong> Readers click a state instead of picking it from a list. This keeps their eyes on the map and shows their state in context with its neighbours.</li>
-                <li><strong>Plain-language impacts.</strong> The impacts step gives temperatures in °F and rainfall in inches per year because our audience is American. It puts the baseline next to the projection so the change has a reference point.</li>
-                <li><strong>Comparing scenarios.</strong> The impacts step ends by listing all four emissions scenarios side by side for the same state. This shows that the future isn't fixed: the gap between SSP1-2.6 and SSP5-8.5 is often larger than the low-emissions change itself.</li>
-                <li><strong>Pan and zoom.</strong> Dragging pans the map. The scroll wheel only zooms while Ctrl/⌘ is held, so the map doesn't hijack page scrolling in a scroll-snapping story.</li>
-                <li><strong>Tooltips</strong> give the exact value and the baseline period, for readers who want a number rather than a color.</li>
+                <li>Scrolling narrative: This allows us to pick and choose what the reader sees at any moment, which lets us make the visualization more sensational/attention-grabbing. This form of interaction is simple and effective, which was why we chose it. Other alternatives were including arrows to switch to the next slide or having separate pages, but these require more work from the user that take away from the smoothness that we wanted.</li>
+                <li>Maps: We have two maps in our visualization, where marks are areas representing states and channels include the color and the shape. The shape of the area obviously encodes which state is being represented, while the color represents the temperature/rainfall. We chose to use red for temperature and blue for rainfall, as it is easy to make the association between red=hot and blue=water. This makes it much easier for the reader to understand which variable is being displayed at what time. Alternatives included having other colors to encode our variables, but we deemed these shades to be most relevant.</li>
+                <li>Slide colors: Building off the last point, we chose to use a variety of colors for our slide backgrounds to help convey our message. The first two slides are red/orange to convey a negative and serious tone to draw in the reader, while the third and fourth slides are dark to emphasize the severe temperature changes. Finally, the last slides are bright to show that the future could be better.</li>
             </ul>
 
-            <h3>Limitations</h3>
-            <ul>
-                <li>We use a single model and a single ensemble member. Other CMIP6 models disagree, especially on rainfall, so these are one plausible outcome, not a forecast.</li>
-                <li>The grid is coarse. Small states such as Rhode Island and Delaware are covered by only one or two grid cells, and grid cells are averaged without area weighting.</li>
-                <li>Annual means hide changes in seasons and extremes, such as heat waves, droughts and heavy downpours, which matter most for daily life.</li>
-                <li>The western Aleutian Islands lie beyond 180° longitude and fall outside the processing box.</li>
-            </ul>
+            
 
             <h3>Development process</h3>
-            <p>[Team: fill in who worked on what, roughly how many hours each person spent, and which parts took the most time.] Setting up the data took the most iteration: finding matching Zarr stores for every scenario, reprojecting longitudes, and choosing a clipping strategy that didn't drop small states. The front end went through several layouts before we settled on the scrolling story.</p>
+            <p>Our team consists of 3 people and we generally split the work evenly. For the project checkpoint, everybody got one task but was also able to oversee the others’ tasks. Leo made the initial static visualizations, Jonathan created the planning document, and Kevin recorded the video presentation.
+	After we finished the checkpoint, we decided to work together on every task instead of splitting them. There were two main objectives that needed to be completed; the visualization website and the writeup. The website took roughly 8 people-hours, which was faster than predicted since we worked at the same time. The writeup only took 2 people-hours, as we had already done most of the work and simply needed to document everything. The project took an overall 10 people-hours, with the website itself taking up the vast majority of the time.</p>
         </div>
     </section>
 

@@ -537,3 +537,17 @@ textarea {
 .state {
     cursor: pointer;
 }
+
+.transition1 {
+    background: #000000;
+    color: rgb(116, 116, 116);
+    text-align: center;
+    gap: 30px;
+}
+
+.transition3 {
+    background: #1b6266;
+    color: white;
+    text-align: center;
+    gap: 30px;
+}
